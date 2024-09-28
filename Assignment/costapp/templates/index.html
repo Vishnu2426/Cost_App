@@ -1,0 +1,155 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cost App Calculator</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <h1>Cost App Calculator</h1>
+    <div>
+        <form>
+            <label for="category">Category :</label>
+            <select id="category" name="category" onchange="showCheckboxes()">
+                <option value="">Select a category</option>
+                <option value="E-commerce">E-commerce</option>
+                <option value="Social Media">Social Media</option>
+                <option value="Cloud Kitchen">Cloud Kitchen</option>
+            </select>
+
+            <!-- E-commerce options -->
+            <div id="ecommerce-options" class="checkbox-group" style="display:none;">
+                <label><input type="checkbox" name="features" value="Product Listing" onchange="toggleHoursInput(this, 'product-listing-hours')"> Product Listing (Max 30 Hour)</label><br>
+                
+                <!-- Product Listing Manual Input -->
+                <div class="hours-input" style="display:none;" id="product-listing-hours">
+                    <label for="ecommerce-product-hours">Enter Hours:</label>
+                    <input type="number" id="ecommerce-product-hours" min="0" max="30" value="0" oninput="validateHours(this)">
+                </div>
+
+                <label><input type="checkbox" name="features" value="Payment Integration" onchange="toggleHoursInput(this, 'payment-integration-hours')"> Payment Integration (Max 25 Hours)</label><br>
+                
+                <!-- Payment Integration Manual Input -->
+                <div class="hours-input" style="display:none;" id="payment-integration-hours">
+                    <label for="ecommerce-payment-hours">Enter Hours:</label>
+                    <input type="number" id="ecommerce-payment-hours" min="0" max="25" value="0" oninput="validateHours(this)">
+                </div>
+
+                <p id="ecommerce-total">Total: 0 Hours</p>
+            </div>
+
+            <!-- Social Media options -->
+            <div id="social-media-options" class="checkbox-group" style="display:none;">
+                <label><input type="checkbox" name="features" value="User Profiles" onchange="toggleHoursInput(this, 'user-profiles-hours')"> User Profiles (Max 30 Hours)</label><br>
+
+                <!-- User Profiles Manual Input -->
+                <div class="hours-input" style="display:none;" id="user-profiles-hours">
+                    <label for="socialmedia-user-hours">Enter Hours:</label>
+                    <input type="number" id="socialmedia-user-hours" min="0" max="30" value="0" oninput="validateHours(this)">
+                </div>
+
+                <label><input type="checkbox" name="features" value="Chat System" onchange="toggleHoursInput(this, 'chat-system-hours')"> Chat System (Max 40 Hours)</label><br>
+
+                <!-- Chat System Manual Input -->
+                <div class="hours-input" style="display:none;" id="chat-system-hours">
+                    <label for="socialmedia-chat-hours">Enter Hours:</label>
+                    <input type="number" id="socialmedia-chat-hours" min="0" max="40" value="0" oninput="validateHours(this)">
+                </div>
+
+                <p id="socialmedia-total">Total: 0 Hours</p>
+            </div>
+
+            <!-- Cloud Kitchen options -->
+            <div id="cloud-kitchen-options" class="checkbox-group" style="display:none;">
+                <label><input type="checkbox" name="features" value="Menu Display" onchange="toggleHoursInput(this, 'menu-display-hours')"> Menu Display (Max 25 Hours)</label><br>
+
+                <!-- Menu Display Manual Input -->
+                <div class="hours-input" style="display:none;" id="menu-display-hours">
+                    <label for="cloudkitchen-menu-hours">Enter Hours:</label>
+                    <input type="number" id="cloudkitchen-menu-hours" min="0" max="25" value="0" oninput="validateHours(this)">
+                </div>
+
+                <label><input type="checkbox" name="features" value="Online Ordering" onchange="toggleHoursInput(this, 'online-ordering-hours')"> Online Ordering (Max 40 Hours)</label><br>
+
+                <!-- Online Ordering Manual Input -->
+                <div class="hours-input" style="display:none;" id="online-ordering-hours">
+                    <label for="cloudkitchen-ordering-hours">Enter Hours:</label>
+                    <input type="number" id="cloudkitchen-ordering-hours" min="0" max="40" value="0" oninput="validateHours(this)">
+                </div>
+
+                <p id="cloudkitchen-total">Total: 0 Hours</p>
+            </div>
+        </form>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        function showCheckboxes() {
+            var category = document.getElementById('category').value;
+            var ecommerceOptions = document.getElementById('ecommerce-options');
+            var socialMediaOptions = document.getElementById('social-media-options');
+            var cloudKitchenOptions = document.getElementById('cloud-kitchen-options');
+            
+            // Show E-commerce checkboxes
+            ecommerceOptions.style.display = (category === 'E-commerce') ? 'block' : 'none';
+
+            // Show Social Media checkboxes
+            socialMediaOptions.style.display = (category === 'Social Media') ? 'block' : 'none';
+
+            // Show Cloud Kitchen checkboxes
+            cloudKitchenOptions.style.display = (category === 'Cloud Kitchen') ? 'block' : 'none';
+        }
+
+        function toggleHoursInput(checkbox, inputId) {
+            var input = document.getElementById(inputId);
+            input.style.display = checkbox.checked ? 'block' : 'none';
+            updateTotal();
+        }
+
+        function validateHours(inputElement) {
+            // Ensure that the entered hours don't exceed the max value for each feature
+            var max = parseInt(inputElement.max);
+            var value = parseInt(inputElement.value);
+            if (value > max) {
+                inputElement.value = max;
+            }
+            updateTotal();
+        }
+
+        function updateTotal() {
+            var ecommerceTotal = 0;
+            var socialmediaTotal = 0;
+            var cloudkitchenTotal = 0;
+
+            // E-commerce calculations
+            if (document.querySelector('input[value="Product Listing"]').checked) {
+                ecommerceTotal += parseInt(document.getElementById('ecommerce-product-hours').value);
+            }
+            if (document.querySelector('input[value="Payment Integration"]').checked) {
+                ecommerceTotal += parseInt(document.getElementById('ecommerce-payment-hours').value);
+            }
+            document.getElementById('ecommerce-total').innerHTML = "Total: " + ecommerceTotal*10 + " $";
+
+            // Social Media calculations
+            if (document.querySelector('input[value="User Profiles"]').checked) {
+                socialmediaTotal += parseInt(document.getElementById('socialmedia-user-hours').value);
+            }
+            if (document.querySelector('input[value="Chat System"]').checked) {
+                socialmediaTotal += parseInt(document.getElementById('socialmedia-chat-hours').value);
+            }
+            document.getElementById('socialmedia-total').innerHTML = "Total: " + socialmediaTotal *10 + " $";
+
+            // Cloud Kitchen calculations
+            if (document.querySelector('input[value="Menu Display"]').checked) {
+                cloudkitchenTotal += parseInt(document.getElementById('cloudkitchen-menu-hours').value);
+            }
+            if (document.querySelector('input[value="Online Ordering"]').checked) {
+                cloudkitchenTotal += parseInt(document.getElementById('cloudkitchen-ordering-hours').value);
+            }
+            document.getElementById('cloudkitchen-total').innerHTML = "Total: " + cloudkitchenTotal + " Hours";
+        }
+    </script>
+</body>
+</html>
